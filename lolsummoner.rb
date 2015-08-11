@@ -14,7 +14,10 @@ class LolSummoner
  end
 
  def name_with_space(name)
-  name.gsub(" ", "%20")
+   name.gsub(" ", "%20")
+ end
+ def name_without_space(name)
+   name.gsub("%20","")
  end
 
  def region_server(region)
@@ -43,12 +46,12 @@ class LolSummoner
  def summoner_id
    handle_timeouts do
      url = "#{domain}/#{ base_path }/#{playername}?api_key=#{api_key}"
-     puts url
      response = HTTParty.get(url)
      case response.code
        when 200
         puts "All good!"
-        JSON.parse(response.body)
+        reponse = JSON.parse(response.body)
+        response[name_without_space(playername).downcase]["id"]
        when 404..600
          puts "ERROR #{response.code}"
      end
